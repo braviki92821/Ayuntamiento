@@ -1,0 +1,71 @@
+nav(class="sticky top-0 bg-[#912828] p-4 flex items-center justify-between")
+    div
+        h1(class="text-white text-xl font-semibold") Ayuntamiento de Papantla
+    div(class="flex items-center space-x-4")
+        form(action="/auth/cerrar-sesion" method="POST")
+            input(type="hidden" name="_csrf" value=csrfToken) 
+            input(type="submit" class="text-sm font-bold text-white lg:pr-2 cursor-pointer" value="Cerrar Sesion")
+
+aside(class="fixed !visible  top-0 left-0 z-[1035] h-screen sm:w-30 bg-[#912828] text-white w-64 min-h-screen p-4")
+    nav
+        ul(class="space-y-2")
+            li
+                div(class="flex items-center justify-between p-2")
+                    img(src="/img/logo.jpeg" class="w-20 h-20" alt="")
+            li
+                div(class="flex items-center justify-between p-2 hover:bg-gray-700")
+                    a(href="/admin/inicio" class="flex items-center ")
+                        i(class="fa fa-bars mr-2")
+                        span Inicio      
+            li
+                div(class="flex items-center justify-between p-2 hover:bg-gray-700")
+                    div(class="flex items-center")
+                        i(class="fa fa-user mr-2")
+                        span Perfil      
+                    i(class="fas fa-chevron-down text-xs")  
+                ul(class="desplegable ml-4 ")
+                    li
+                        a(href="/admin/perfil" class="block p-2 hover:bg-gray-700 flex items-center ")
+                            i(class="fas fa-chevron-right") 
+                                span(class="text-md mr-2") Tus Datos
+                    li
+                        a(href="" class="block p-2 hover:bg-gray-700 flex items-center ")
+                            i(class="fas fa-chevron-right") 
+                                span(class="text-md mr-2") Cambio de contraseña     
+            li(class="opcion-desplegable")
+                div(class="flex items-center justify-between p-2 hover:bg-gray-700")
+                    div(class="flex items-center")
+                        a(href="/admin/solicitudes" )
+                            i(class="fa fa-file mr-2")
+                            span Ver solicitudes                   
+            li
+                div(class="flex items-center justify-between p-2 hover:bg-gray-700")
+                    div(class="flex items-center")
+                        i(class="fa fa-users mr-2")
+                        span Usuarios      
+                    i(class="fas fa-chevron-down text-xs")  
+                ul(class="desplegable ml-4 ")
+                    li
+                        a(href="/admin/nuevo-usuario" class="block p-2 hover:bg-gray-700 flex items-center ")
+                            i(class="fas fa-chevron-right") 
+                                span(class="text-md mr-2") Crear Usuario
+                    li
+                        a(href="/admin/usuarios" class="block p-2 hover:bg-gray-700 flex items-center ")
+                            i(class="fas fa-chevron-right") 
+                                span(class="text-md mr-2") Lista de Usuarios
+            li(class="opcion-desplegable")
+                div(class="flex items-center justify-between p-2 hover:bg-gray-700")
+                    div(class="flex items-center")
+                        a(href="/admin/" )
+                        i(class="fa fa-sticky-note mr-2")
+                        span Avisos     
+                    i(class="fas fa-chevron-down text-xs")
+                ul(class="desplegable ml-4 ")
+                    li
+                        a(href="" class="block p-2 hover:bg-gray-700 flex items-center ")
+                            i(class="fas fa-chevron-right") 
+                                span(class="text-md mr-2") Crear Aviso
+                    li
+                        a(href="" class="block p-2 hover:bg-gray-700 flex items-center ")
+                            i(class="fas fa-chevron-right") 
+                                span(class="text-md mr-2") Avisos

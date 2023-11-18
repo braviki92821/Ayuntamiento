@@ -1,0 +1,18 @@
+extends ../layout/admin
+
+block contenido 
+    h1(class="text-center font-extrabold text-2xl")= categoria.nombre
+    //-pre= JSON.stringify(solicitudes, undefined,2)
+    if solicitudes.length
+        div(class="grid-cols-1 sm:grid md:grid-cols-3")
+            each solicitud in solicitudes
+                div(class="border border-black mx-3 mt-6 flex flex-col rounded-lg  sm:shrink-0 sm:grow sm:basis-0")
+                    div(class="p-6 space-y-3")
+                        h5(class="mb-2 text-lg font-extrabold leading-tight text-black")=`Titulo: ${solicitud.titulo}` 
+                        p(class="text-black font-semibold")=`Tipo: ${solicitud.tipoRecurso}`
+                        p(class="text-black ")=`Fecha: ${formatearFecha(solicitud.createdAt)}`
+                        p(class="text-black ")=`Solicitud hecha por: ${solicitud.usuario.nombre} ${solicitud.usuario.apellido}`
+                        p(class="text-black ")=`Cargo: ${solicitud.usuario.cargo}`
+                        a(class="bg-indigo-600 w-full text-center block text-black p-2 uppercase rounded" href=`/admin/solicitud-status/${solicitud.id}`) Aceptar o rechazar
+    else
+        p(class="text-center text-lg font-bold") No hay Solicitudes
