@@ -257,6 +257,7 @@ const usuarios = async (req, res) => {
 
     res.render('admin/usuarios', {
         pagina: 'Usuarios',
+        csrfToken: req.csrfToken(),
         usuarios
     })
 }

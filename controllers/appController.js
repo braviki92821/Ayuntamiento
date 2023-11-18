@@ -1,6 +1,7 @@
 import { validationResult } from "express-validator";
 import { Solicitud } from "../models/index.js"
 import { formatearFecha} from "../helpers/index.js"
+import { Usuario } from "../models/index.js"
 
 const inicio = (req, res) => {
 
@@ -10,9 +11,16 @@ const inicio = (req, res) => {
     })
 }
 
-const perfil = (req, res) => {
+const perfil = async (req, res) => {
+
+    const { id } = req.usuario
+
+    const usuario = await Usuario.scope('eliminarPassword').findByPk(id)
+
     res.render('usuario/perfil',{
         pagina: 'Perfil',
+        csrfToken: req.csrfToken(),
+        usuario
     })
 }
 
