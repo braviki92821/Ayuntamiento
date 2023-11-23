@@ -1,7 +1,7 @@
 import { check,  validationResult } from "express-validator";
 import { Usuario } from '../models/index.js'
 import { generarId,generarJWT } from "../helpers/tokens.js";
-import { emailRegistro, emailOlvidePassword } from "../helpers/emails.js";
+import { emailOlvidePassword } from "../helpers/emails.js";
 
 const formularioLogin = (req, res) => {
     res.render("auth/login", {
@@ -102,7 +102,7 @@ res.render("auth/confirmar-cuenta", {
 
 const formularioOlvidePassword = (req, res) => {
 res.render("auth/olvide-password", {
-  pagina: "Recupera tu acceso al Comparador",
+  pagina: "Recupera tu acceso al Ayuntamiento",
   csrfToken: req.csrfToken(),
 });
 };

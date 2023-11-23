@@ -14,7 +14,7 @@ block contenido
                     p(class="w-full px-3 py-2 border border-gray-600 rounded-m")= solicitud.tipoRecurso
                 div
                     label(class="block text-sm uppercase text-gray-500 mb-2 font-bold") Descripcion
-                    p(class="w-full h-auto px-3 py-2 border border-gray-600 rounded-m")!= solicitud.Pedido
+                    p(class="w-full px-3 py-2 rounded-m")!= solicitud.Pedido
                 div
                     label(class="block text-sm uppercase text-gray-500 mb-2 font-bold") Solicitud Hecha por
                     p(class="w-full px-3 py-2 border border-gray-600 rounded-m")= solicitud.usuario.nombre +' '+solicitud.usuario.apellido
@@ -33,6 +33,8 @@ block contenido
                     label(class="block text-sm uppercase text-gray-500 mb-2 font-bold") Mensaje (razon por la que acepta o rechaza)*
                     textarea(name="observaciones" rows=10 class="w-full px-3 py-2 border border-gray-600 rounded-md placeholder-gray-400")
                 input(class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 cursor-pointer" type="submit", value="Enviar Respuesta")
+block scripts
+    script(src="/js/sidebar.js") 
 
 
                     

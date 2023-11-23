@@ -12,7 +12,7 @@ const importarDatos = async () => {
   
       await Promise.all([
           //Departamento.bulkCreate(departamentos),
-          Usuario.bulkCreate(usuarios),
+          //Usuario.bulkCreate(usuarios),
           //Solicitud.bulkCreate(),
           
       ])

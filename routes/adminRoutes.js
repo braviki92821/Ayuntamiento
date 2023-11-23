@@ -14,7 +14,7 @@ router.get('/solicitudes', protegerRuta, solicitudes)
 router.get('/categoria/:id', protegerRuta,categoria)
 
 router.get('/solicitud-status/:id', protegerRuta, cambiarEstado)
-router.post('/solicitud-status/:id', protegerRuta, body('observaciones').notEmpty().withMessage('Debe enviar un mensaje'), enviarRespuesta)
+router.post('/solicitud-status/:id', protegerRuta, body("observaciones").notEmpty().withMessage("Debe enviar un mensaje"), enviarRespuesta)
 
 router.get('/nuevo-usuario', protegerRuta, formularioRegistro)
 router.post('/nuevo-usuario', protegerRuta, body("nombre").notEmpty().withMessage("No se permiten valores vacios"),
@@ -24,6 +24,7 @@ router.post('/nuevo-usuario', protegerRuta, body("nombre").notEmpty().withMessag
                                             body("tipo").notEmpty().withMessage("Seleccione un tipo de usuario"),
                                             body("departamento").notEmpty().withMessage("Seleccione un departamento"),
                                             registrarUsuario)
+                                            
 router.get('/usuarios', protegerRuta, usuarios)
 
 export default router

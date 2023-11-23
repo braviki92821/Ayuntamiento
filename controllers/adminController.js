@@ -119,8 +119,18 @@ const cambiarEstado = async (req, res) => {
 }
 
 const enviarRespuesta = async (req, res) => {
-    
+    let resultado = validationResult(req);
+
     const { tipo} = req.usuario
+
+    if(!resultado.isEmpty()){
+        return res.render('admin/detalle-solicitud',{
+             pagina: 'Detalle de solicitud',
+             csrfToken: req.csrfToken(),
+             datos: req.body,
+             errores: resultado.array()
+         })
+    }
 
     if(tipo != 'Administrador'){
         res.redirect('/user/inicio')

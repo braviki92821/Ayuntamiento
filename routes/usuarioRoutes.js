@@ -7,7 +7,9 @@ const router = express.Router()
 router.get('/login',formularioLogin)
 router.post('/login',autenticar)
 
-router.get('/confirmar/:token',confirmar)
+router.get('/confirmar/:token', confirmar)
+
+router.get('/reset-password', )
 
 router.post('/cerrar-sesion', cerrarSesion)
 
