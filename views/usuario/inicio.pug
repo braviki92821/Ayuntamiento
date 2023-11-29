@@ -3,11 +3,37 @@ extends ../layout/app
 block contenido 
     h1(class="text-center mt-5 font-bold text-2xl") Bienvenido 
 
-    h2(class="text-center mt-5 font-bold text-lg") Noticias
+    h2(class="text-center mt-5 font-bold text-lg") Mensajes para usted
 
-    div(class="bg-white shadow rounded-lg mt-5")
-        ul(class="divide-y divide-gray-200")
-            li
-                div(class="border border-gray-950 p-6 w-full items-center justify-between space-y-8 gap-4 md:space-y-0")
-                    h2(class="text-center font-bold text-lg") Aviso
-                    p(class="font-semibold text-md ") Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt quam totam accusantium necessitatibus eligendi quaerat ut eos dolor corporis. Cupiditate assumenda voluptas rem dolorum fuga recusandae eligendi? Expedita optio ea accusantium a fugit. Ex quas quisquam vero laborum nisi voluptatibus ut, officia incidunt harum, ipsa repudiandae libero neque quibusdam. Sit!
+    if avisos.length
+        div(class="bg-slate-300 shadow rounded-lg mt-4")
+            ul(class="divide-y divide-gray-200")
+                each aviso in avisos
+                    li
+                        div(class="p-6 w-full flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-8 gap-4 md:space-y-0")
+                            div(class="sm:w-3/4 md:w-4/6 lg:w-5/6 space-y-3")
+                                h2(class="text-center font-bold text-lg")=aviso.titulo
+                                p(class="text-center font-semibold text-md ")=aviso.mensaje
+                                p(class="text-center font-semibold text-md ")=`Emitido el: ${formatearFecha(aviso.createdAt)}`                    
+                            div(class="sm:w-1/4 md:w-2/6 lg:w-1/6 flex flex-col 2xl:flex-row gap-2 ")
+                                form(action=`/user/mensaje-leido/${aviso.id}`, method="POST")
+                                    input(type="hidden" name="_csrf" value=csrfToken) 
+                                    input(class="w-full cursor-pointer px-2 py-2 md:py-1 text-center text-xs leading-5 font-semibold rounded bg-green-400" type="submit" value="Marcar como leido") 
+    else
+        div(class="bg-slate-300 shadow rounded-lg mt-5")
+            p(class="text-center mt-5 font-bold text-lg") No hay mensajes para usted
+    h2(class="text-center mt-5 font-bold text-lg") Avisos
+    if avisosG.length
+        div(class="bg-white shadow rounded-lg mt-5")
+            ul(class="divide-y divide-gray-200")
+                each aviso in avisosG
+                    li
+                        div(class="border border-gray-950 p-6 w-full items-center justify-between space-y-8 gap-4 md:space-y-0")
+                            h2(class="text-center font-bold text-lg")=aviso.titulo
+                            p(class="font-semibold text-md ")=aviso.mensaje
+                            p(class="font-semibold text-md mt-3")=`Emitido el: ${formatearFecha(aviso.createdAt)}`
+    else
+        div(class="bg-slate-300 shadow rounded-lg mt-5")
+            p(class="text-center mt-5 font-bold text-lg") No hay Avisos Generales Recientes
+block scripts
+    script(src="/js/sidebar.js") 

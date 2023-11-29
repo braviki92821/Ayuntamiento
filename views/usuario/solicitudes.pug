@@ -4,7 +4,7 @@ block contenido
     h1(class="text-center mt-5 font-bold text-2xl")=pagina
     //pre= JSON.stringify(solicitudes, undefined, 2)
     if solicitudes.length
-        div(class="bg-white shadow rounded-lg")
+        div(class="bg-slate-300 shadow rounded-lg")
             ul(class="divide-y divide-gray-200")
                 each solicitud in solicitudes
                     li
@@ -13,7 +13,7 @@ block contenido
                                 p(class="block text-sm font-extrabold text-indigo-600 truncate")= solicitud.titulo
                                 p(class="text-sm text-black font-bold")= solicitud.tipoRecurso
                                 p(class="text-sm text-black font-bold" )!= solicitud.Pedido
-                                p(class="text-sm text-black font-bold")= formatearFecha(solicitud.createdAt)
+                                p(class="text-sm text-black font-bold")= `Enviado el: ${formatearFecha(solicitud.createdAt)}` 
                             div(class="sm:w-1/4 md:w-2/6 lg:w-1/6 flex flex-col 2xl:flex-row gap-2 ")
                                 if solicitud.estatus != null
                                     a(class=`w-full px-2 py-2 md:py-1 text-center text-xs leading-5 font-semibold rounded ${solicitud.estatus ? 'bg-green-500' : 'bg-red-500'}` )= `${solicitud.estatus ?  'Aceptada' : 'Rechazada'}`

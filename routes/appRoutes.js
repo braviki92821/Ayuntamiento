@@ -1,5 +1,5 @@
 import express from 'express'
-import { crearSolicitud, enviarSolicitud, inicio, perfil, verSolicitudes } from '../controllers/appController.js'
+import { crearSolicitud, enviarSolicitud, inicio, perfil, verSolicitudes, mensajeLeido } from '../controllers/appController.js'
 import { body } from 'express-validator'
 import protegerRuta from '../middleware/protegerRuta.js'
 const router = express.Router()
@@ -15,6 +15,8 @@ router.post('/crear-solicitud', protegerRuta, body('titulo').notEmpty().withMess
                                 enviarSolicitud)
 
 router.get('/mis-solicitudes', protegerRuta, verSolicitudes)
+
+router.post('/mensaje-leido/:id', protegerRuta, mensajeLeido)
 
 
 export default router

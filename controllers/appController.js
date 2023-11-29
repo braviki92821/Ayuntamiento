@@ -1,14 +1,43 @@
 import { validationResult } from "express-validator";
-import { Solicitud } from "../models/index.js"
+import { Solicitud, Usuario, Aviso } from "../models/index.js"
 import { formatearFecha} from "../helpers/index.js"
-import { Usuario } from "../models/index.js"
 
-const inicio = (req, res) => {
+const inicio = async (req, res) => {
+
+    const { id } = req.usuario
+
+    const [avisos, avisosG] = await Promise.all([
+        Aviso.findAll({ limit: 2, where: { destino: id, estado: true }}),
+        Aviso.findAll({ limit: 4, where: { destino: 'todos', estado:true }})
+    ])
 
     res.render('usuario/inicio',{
         pagina: 'Inicio',
         csrfToken: req.csrfToken(),
+        avisos,
+        avisosG,
+        formatearFecha
     })
+}
+
+const mensajeLeido = async( req, res) => {
+    const { id } = req.params
+
+    const mensaje = await Aviso.findByPk(id)
+
+    try {
+        mensaje.set({
+            estado: false
+        })
+
+        await mensaje.save()
+
+        res.redirect('/user/inicio')
+        
+    } catch (error) {
+        console.log(error)
+    }
+
 }
 
 const perfil = async (req, res) => {
@@ -52,6 +81,7 @@ const enviarSolicitud = async (req,res) => {
             titulo,
             tipoRecurso,
             Pedido,
+            estado: true,
             departamentoId,
             usuarioId
         })
@@ -82,6 +112,7 @@ const verSolicitudes = async (req, res) => {
 
 export {
     inicio,
+    mensajeLeido,
     perfil,
     crearSolicitud,
     enviarSolicitud,

@@ -1,6 +1,6 @@
 import { validationResult } from "express-validator";
 import { Op } from 'sequelize';
-import { Solicitud, Departamento, Usuario } from "../models/index.js"
+import { Solicitud, Departamento, Usuario, Aviso } from "../models/index.js"
 import { formatearFecha } from "../helpers/index.js"
 import { emailAviso, emailRegistro } from "../helpers/emails.js"
 import { generarId, generarPassword } from "../helpers/tokens.js"
@@ -152,12 +152,13 @@ const enviarRespuesta = async (req, res) => {
 
 
     try {
+
         solicitud.set({
             estatus: Boolean(Number(estatus)),
             observaciones
         })
 
-        const correo = await emailAviso({
+        await emailAviso({
             nombre: solicitud.usuario.nombre,
             apellido: solicitud.usuario.apellido,
             email: solicitud.usuario.correo,
@@ -165,7 +166,15 @@ const enviarRespuesta = async (req, res) => {
             observaciones: observaciones,
             estatus: Boolean(Number(estatus)) ? 'Aceptada' : 'Rechazada'
         })
-        console.log(correo)
+        
+        await Aviso.create({
+            titulo: 'Estado de solicitud',
+            mensaje: `Solicitud con titulo: ${solicitud.titulo} ha sido ${Boolean(Number(estatus)) ? 'Aceptada' : 'Rechazada'}`,
+            estado: true,
+            destino: solicitud.usuario.id,
+            usuarioId: req.usuario.id
+        })
+
         await solicitud.save()
 
         res.redirect('/admin/solicitudes')
@@ -199,9 +208,9 @@ const registrarUsuario = async (req, res) => {
 
   let resultado = validationResult(req);
 
-  const { tipou } = req.usuario
+  const { tipo } = req.usuario
 
-  if(tipou != 'Administrador'){
+  if(tipo != 'Administrador'){
       res.redirect('/user/inicio')
   }
 
@@ -217,7 +226,7 @@ const registrarUsuario = async (req, res) => {
     });
   }
 
-  const { nombre, apellido, correo, cargo, tipo, departamento:departamentoId } = req.body;
+  const { nombre, apellido, correo, cargo, tipo:tipou, departamento:departamentoId } = req.body;
 
   const existeUsuario = await Usuario.findOne({ where: { correo } });
   
@@ -240,7 +249,8 @@ const registrarUsuario = async (req, res) => {
     cargo,
     password: bcrypt.hashSync( password, 10 ),
     token: generarId(),
-    tipo: tipo,
+    estado: true,
+    tipo: tipou,
     departamentoId
   });
   
@@ -262,7 +272,8 @@ const usuarios = async (req, res) => {
     }
 
     const usuarios = await Usuario.scope('eliminarPassword').findAll({
-        where: { id: { [Op.ne]: id  } }
+        where: { id: { [Op.ne]: id  }, estado: true },
+        include: [ { model: Departamento, as: 'departamento'}]
     })
 
     res.render('admin/usuarios', {
@@ -271,6 +282,163 @@ const usuarios = async (req, res) => {
         usuarios
     })
 }
+
+const editarUsuario = async (req ,res) => {
+    const { id } = req.params
+    const { tipo } = req.usuario
+
+    if(tipo != 'Administrador'){
+        res.redirect('/user/inicio')
+    }
+
+    const usuario = await Usuario.scope('eliminarPassword').findByPk(id,{
+        include: [ { model: Departamento, as: 'departamento'}]
+    })
+    const departamentos = await Departamento.findAll()
+
+    if(!usuario){
+        return res.redirect('/admin/usuarios')
+    }
+
+    res.render('auth/editar-usuario',{
+        pagina: 'Editar usuario',
+        csrfToken: req.csrfToken(),
+        usuario,
+        departamentos
+    })
+}
+
+const guardarUsuario = async (req, res) => {
+    let resultado = validationResult(req);
+    const { id } = req.params
+    const { tipo } = req.usuario
+
+    if(tipo != 'Administrador'){
+        res.redirect('/user/inicio')
+    }
+
+    const usuario = await Usuario.scope('eliminarPassword').findByPk(id,{
+        include: [ { model: Departamento, as: 'departamento'}]
+    })
+
+    const departamentos = await Departamento.findAll()
+
+    if(!usuario){
+        return res.redirect('/admin/usuarios')
+    }
+
+    if (!resultado.isEmpty()) {
+        return res.render("auth/editar-usuario", {
+          pagina: "Editar Usuario",
+          csrfToken: req.csrfToken(),
+          errores: resultado.array(),
+          usuario,
+          datos: req.body,
+          departamentos
+        });
+    }
+    
+    try {
+        const { nombre, apellido, correo, cargo, tipo:tipou, departamento:departamentoId } = req.body;
+        usuario.set({
+            nombre,
+            apellido,
+            correo,
+            cargo,
+            tipo: tipou,
+            departamentoId
+        })
+
+        await usuario.save()
+
+        res.redirect('/admin/usuarios')
+    } catch (error) {
+        console.log(error)
+    }
+    
+}
+
+const eliminarUsuario = async (req, res) => {
+    const { id } = req.params
+    const { tipo } = req.usuario
+
+    if(tipo != 'Administrador'){
+        res.redirect('/user/inicio')
+    }
+
+    const usuario = await Usuario.scope('eliminarPassword').findByPk(id)
+
+    if(!usuario) {
+        return res.redirect('/admin/usuarios')
+    }
+
+    try {
+       usuario.set({
+         estado: false
+       })
+
+       usuario.save()
+
+       res.redirect('/admin/usuarios')
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const crearAviso = async (req, res) => {
+    const { id, tipo } = req.usuario
+
+    if(tipo != 'Administrador'){
+        res.redirect('/user/inicio')
+    }
+
+    const usuarios = await Usuario.scope('eliminarPassword').findAll({
+        where: { id: { [Op.ne]: id  }, estado: true }
+    })
+
+    res.render('admin/crear-aviso', {
+        pagina: 'Crear Aviso',
+        csrfToken: req.csrfToken(),
+        usuarios,
+        datos: {}
+    })
+}
+
+const enviarAviso = async (req, res) => {
+    let resultado = validationResult(req)
+
+    const { id, tipo } = req.usuario
+
+    if(tipo != 'Administrador'){
+        res.redirect('/user/inicio')
+    }
+
+    const usuarios = await Usuario.scope('eliminarPassword').findAll({
+        where: { id: { [Op.ne]: id  }, estado: true }
+    })
+
+    if(!resultado.isEmpty()){
+        return res.render('admin/crear-aviso', {
+            pagina: 'Crear Aviso',
+            csrfToken: req.csrfToken(),
+            usuarios,
+            datos: req.body,
+            errores: resultado.array()
+        })
+    }
+
+    const  { titulo, mensaje, destino } = req.body
+
+    await Aviso.create({
+        titulo,
+        mensaje,
+        destino,
+        estado: true,
+        usuarioId: id
+    })
+
+    res.redirect('/admin/inicio')
+} 
 
 export {
     inicio,
@@ -281,5 +449,10 @@ export {
     enviarRespuesta,
     formularioRegistro,
     registrarUsuario,
-    usuarios
+    usuarios,
+    editarUsuario,
+    guardarUsuario,
+    eliminarUsuario,
+    crearAviso,
+    enviarAviso
 }

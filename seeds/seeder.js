@@ -11,10 +11,9 @@ const importarDatos = async () => {
       await db.sync()
   
       await Promise.all([
-          //Departamento.bulkCreate(departamentos),
-          //Usuario.bulkCreate(usuarios),
-          //Solicitud.bulkCreate(),
-          
+         await Departamento.bulkCreate(departamentos),
+         await Usuario.bulkCreate(usuarios),
+          //Solicitud.bulkCreate(),        
       ])
   
       console.log('Datos importados')

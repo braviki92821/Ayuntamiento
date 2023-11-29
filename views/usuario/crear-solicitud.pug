@@ -17,9 +17,9 @@ block contenido
                     label(class="block text-sm uppercase text-gray-500 mb-2 font-bold" for="tipoRecurso") Tipo de recurso
                     select(name="tipoRecurso" class="w-full px-3 py-2 border border-gray-600 rounded-md placeholder-gray-400")
                         option(value="") --Seleccione-- 
-                        option(value="Inmueble") Inmueble
-                        option(value="Material de Oficina") Materiales de Oficina
-                        option(value="Electronico") Electronico
+                        option(value="Inmueble" selected= datos.tipoRecurso =="Inmueble") Inmueble
+                        option(value="Material de Oficina" selected= datos.tipoRecurso =="Material de Oficina") Materiales de Oficina
+                        option(value="Electronico" selected= datos.tipoRecurso =="Electronico") Electronico
                 div
                     label(class="block text-sm uppercase text-gray-500 mb-2 font-bold" for="pedido") Describa los recursos a solicitar
                     //-textarea(name="pedido" rows=10 class="w-full px-3 py-2 border border-gray-600 rounded-md placeholder-gray-400")= datos.pedido ? datos.pedido : ''

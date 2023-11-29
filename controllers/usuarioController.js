@@ -3,7 +3,8 @@ import { Usuario } from '../models/index.js'
 import { generarId,generarJWT } from "../helpers/tokens.js";
 import { emailOlvidePassword } from "../helpers/emails.js";
 
-const formularioLogin = (req, res) => {
+const formularioLogin = async (req, res) => {
+
     res.render("auth/login", {
         pagina: "Iniciar Sesion",
         csrfToken: req.csrfToken(),
@@ -35,7 +36,7 @@ const autenticar = async(req,res) => {
   
     const usuario = await Usuario.findOne( { where:{ correo } } )
   
-    if(!usuario){
+    if(!usuario || usuario.estado == false){
       return res.render('auth/login',{
         pagina:'Iniciar Sesion',
         csrfToken: req.csrfToken(),

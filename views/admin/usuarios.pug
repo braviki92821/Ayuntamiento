@@ -16,6 +16,7 @@ block contenido
                                 th(scope="col" class="px-6 py-4") Correo
                                 th(scope="col" class="px-6 py-4") Cargo
                                 th(scope="col" class="px-6 py-4") Tipo
+                                th(scope="col" class="px-6 py-4") Departamento
                                 th(scope="col" class="px-6 py-4") Acciones
                         tbody
                             each usuario in usuarios
@@ -25,7 +26,11 @@ block contenido
                                     td(class="whitespace-nowrap px-6 py-4")= usuario.correo
                                     td(class="whitespace-nowrap px-6 py-4")= usuario.cargo
                                     td(class="whitespace-nowrap px-6 py-4")= usuario.tipo
+                                    td(class="whitespace-nowrap px-6 py-4")= usuario.departamento.nombre
                                     td(class="whitespace-nowrap px-6 py-4")
-                                        button(class="bg-red-600 w-full block rounded-sm") Eliminar
+                                        a(href=`/admin/editar-usuario/${usuario.id} ` class="text-center bg-green-600 w-full block rounded-sm") Editar
+                                        form(action=`/admin/eliminar-usuario/${usuario.id}` method="post")
+                                            input(type="hidden" name="_csrf" value=csrfToken)
+                                            input(class="text-center cursor-pointer bg-red-600 w-full block rounded-sm mt-2" type="submit" value="Eliminar") 
 block scripts
     script(src="/js/sidebar.js") 

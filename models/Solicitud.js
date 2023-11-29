@@ -21,6 +21,7 @@ const Solicitud = db.define('solicitudes', {
         allowNull: false
     },
     estatus: DataTypes.BOOLEAN,
+    estado: DataTypes.BOOLEAN,
     observaciones: {
         type: DataTypes.STRING,
         defaultValue: ''
