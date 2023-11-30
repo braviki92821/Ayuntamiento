@@ -2,6 +2,7 @@ import { check,  validationResult } from "express-validator";
 import { Usuario } from '../models/index.js'
 import { generarId,generarJWT } from "../helpers/tokens.js";
 import { emailOlvidePassword } from "../helpers/emails.js";
+import bcrypt from 'bcrypt'
 
 const formularioLogin = async (req, res) => {
 
@@ -119,17 +120,17 @@ let resultado = validationResult(req);
 
 if (!resultado.isEmpty()) {
   return res.render("auth/olvide-password", {
-    pagina: "Recupera tu acceso al Comparador",
+    pagina: "Recupera tu acceso al Ayuntamiento",
     csrfToken: req.csrfToken(),
     errores: resultado.array(),
   });
 }
 
-const { email } = req.body
+const { email:correo } = req.body
+ 
+const usuario = await Usuario.findOne({ where: { correo }})
 
-const usuario = await Usuario.findOne({ where: {email}})
-
-if(!usuario){
+if(!usuario) {
   return res.render("auth/olvide-password", {
     pagina: "Recupera tu acceso al Comparador",
     csrfToken: req.csrfToken(),
@@ -142,9 +143,9 @@ usuario.token = generarId()
 await usuario.save()
 
 emailOlvidePassword({
-  email:usuario.email,
-  nombre:usuario.nombre,
-  token:usuario.token
+  email: usuario.correo,
+  nombre: usuario.nombre,
+  token: usuario.token
 })
 
 res.render('templates/mensaje',{
@@ -155,11 +156,12 @@ res.render('templates/mensaje',{
 };
 
 const comprobarToken = async(req,res,next) => {
-const { token } = req.params
+  const { token } = req.params
 
-const usuario = await  Usuario.findOne({where: {token}})
-if(!usuario){
-  return res.render("auth/confirmar-cuenta", {
+  const usuario = await  Usuario.findOne({where: {token}})
+
+  if(!usuario){
+    return res.render("auth/confirmar-cuenta", {
     pagina: "Reestablece tu password",
     mensaje: "Error al validar la cuenta, intenta de nuevo",
     error: true,
@@ -174,23 +176,22 @@ res.render('auth/reset-password',{
 
 }
 
-const nuevoPassword = async(req,res) =>{
-await check("password")
-.isLength({ min: 6 })
-.withMessage("Contraseñas deben ser de minimo 6 caracteres")
-.run(req);
+const nuevoPassword = async(req, res) => {
+  await check("password")
+  .isLength({ min: 6 })
+  .withMessage("Contraseñas deben ser de minimo 6 caracteres")
+  .run(req);
+  let resultado = validationResult(req);
 
-let resultado = validationResult(req);
-
-if (!resultado.isEmpty()) {
-  return res.render("auth/reset-password", {
-    pagina: "Reestablece tu password",
-    csrfToken: req.csrfToken(),
-    errores: resultado.array(),
-  });
+ if (!resultado.isEmpty()) {
+   return res.render("auth/reset-password", {
+     pagina: "Reestablece tu password",
+     csrfToken: req.csrfToken(),
+     errores: resultado.array(),
+   });
 }
 
-const {token} = req.params
+const { token } = req.params
 const { password }= req.body
 
 const usuario = await Usuario.findOne({where:{token}})
@@ -201,10 +202,63 @@ usuario.token = null;
 
 await usuario.save()
 
-res.render('auth/reset-password',{
+res.render('templates/mensaje',{
   pagina: 'Password Reestablecido',
   mensaje: 'El password se guardo correctamente'
 })
+
+}
+
+const nuevoPasswordAuth = async(req, res) => {
+      const { id } = req.usuario
+
+      const usuario = await Usuario.scope('eliminarPassword').findByPk(id)
+
+      if(!usuario){
+        return res.clearCookie('_token').status(200).redirect('/auth/login')
+      }
+
+      res.render('auth/reset-password',{
+        pagina: 'Cambia tu password',
+        csrfToken: req.csrfToken()
+      })
+}
+
+const cambiarPassword = async (req, res) => {
+  await check("password")
+  .isLength({ min: 6 })
+  .withMessage("Contraseñas deben ser de minimo 6 caracteres")
+  .run(req);
+  let resultado = validationResult(req);
+
+  const { id } = req.usuario
+
+  const usuario = await Usuario.scope('eliminarPassword').findByPk(id)
+
+  if(!usuario){
+    return res.clearCookie('_token').status(200).redirect('/auth/login')
+  }
+
+ if (!resultado.isEmpty()) {
+   return res.render("auth/reset-password", {
+     pagina: "Reestablece tu password",
+     csrfToken: req.csrfToken(),
+     errores: resultado.array(),
+   });
+ }
+
+ const { password }= req.body
+
+ const salt= await bcrypt.genSalt(10)
+ usuario.password = await bcrypt.hash(password, salt)
+ await usuario.save()
+
+ res.render('templates/mensaje ',{
+  pagina: 'Password Reestablecido',
+  mensaje: 'El password se guardo correctamente'
+ })
+
+ res.clearCookie('_token').status(200).redirect('/auth/login')
 
 }
 
@@ -213,5 +267,10 @@ export {
     autenticar,
     cerrarSesion,
     confirmar,
-    resetPassword
+    formularioOlvidePassword,
+    comprobarToken,
+    nuevoPassword,
+    resetPassword,
+    nuevoPasswordAuth,
+    cambiarPassword
 }

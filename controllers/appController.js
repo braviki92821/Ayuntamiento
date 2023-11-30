@@ -16,7 +16,7 @@ const inicio = async (req, res) => {
         csrfToken: req.csrfToken(),
         avisos,
         avisosG,
-        formatearFecha
+        formatearFecha,
     })
 }
 
