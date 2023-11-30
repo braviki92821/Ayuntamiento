@@ -51,6 +51,7 @@ const autenticar = async(req,res) => {
         errores: [ { msg:'Tu cuenta no ha sido confirmado' } ]
       })
     }
+     console.log(usuario.verificarPassword(password))
      
     if(!usuario.verificarPassword(password)){
       return res.render('auth/login',{
@@ -211,5 +212,6 @@ export {
     formularioLogin,
     autenticar,
     cerrarSesion,
-    confirmar
+    confirmar,
+    resetPassword
 }

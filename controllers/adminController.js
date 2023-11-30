@@ -4,7 +4,6 @@ import { Solicitud, Departamento, Usuario, Aviso } from "../models/index.js"
 import { formatearFecha } from "../helpers/index.js"
 import { emailAviso, emailRegistro } from "../helpers/emails.js"
 import { generarId, generarPassword } from "../helpers/tokens.js"
-import bcrypt from 'bcrypt'
 
 const inicio = (req,res) => {
 
@@ -241,13 +240,13 @@ const registrarUsuario = async (req, res) => {
   }
 
   const password = generarPassword()   
-
+  console.log(password)
   const usuario = await Usuario.create({
     nombre,
     apellido,
     correo,
     cargo,
-    password: bcrypt.hashSync( password, 10 ),
+    password,
     token: generarId(),
     estado: true,
     tipo: tipou,

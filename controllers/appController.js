@@ -20,26 +20,6 @@ const inicio = async (req, res) => {
     })
 }
 
-const mensajeLeido = async( req, res) => {
-    const { id } = req.params
-
-    const mensaje = await Aviso.findByPk(id)
-
-    try {
-        mensaje.set({
-            estado: false
-        })
-
-        await mensaje.save()
-
-        res.redirect('/user/inicio')
-        
-    } catch (error) {
-        console.log(error)
-    }
-
-}
-
 const perfil = async (req, res) => {
 
     const { id } = req.usuario
@@ -96,18 +76,87 @@ const verSolicitudes = async (req, res) => {
 
      const { id } = req.usuario
 
-     const solicitudes = await Solicitud.findAll({
-        where: { usuarioId: id},
-        order: [[ 'createdAt','DESC' ]]
-    })
+     const { pagina: paginaActual } = req.query;
+
+     const exp = /^[0-9]+$/;
+
+     if (!exp.test(paginaActual)) {
+        return res.redirect("/user/mis-solicitudes?pagina=1");
+     }
+
+     let limite = 6;
+    
+     const offset = paginaActual * limite - limite;
+
+     const [solicitudes, total] = await Promise.all([
+        Solicitud.findAll({
+            limit: limite,
+            offset,
+            where: { usuarioId: id },
+            order: [[ 'createdAt','DESC' ]]
+         }),
+        Solicitud.count({where: { usuarioId: id } })
+     ])
+
 //    console.log(noHTML('<p>Monitor de 24" pulgadas para la sala de conferencias</p>'))
 
     res.render('usuario/solicitudes',{
         pagina: 'Mis Solicitudes',
         solicitudes,
         csrfToken: req.csrfToken(),
-        formatearFecha
+        formatearFecha,
+        limite,
+        offset,
+        paginaActual:Number(paginaActual),
+        paginas: Math.ceil(total / limite),
+        total
     })
+}
+
+const mensajesPendientes = async (req, res) => {
+    const { id } = req.usuario
+
+    const mensajes = await Aviso.findAll({ where: { destino: id, estado: true }, include: [ { model: Usuario.scope('eliminarPassword'), as: 'usuario'}] })
+
+    res.render('usuario/mensajes-pendientes', {
+        pagina: 'No leidos',
+        csrfToken: req.csrfToken(),
+        formatearFecha,
+        mensajes
+    })
+}
+ 
+const mensajes = async (req, res) => {
+    const { id } = req.usuario
+
+    const mensajes = await Aviso.findAll({ where: { destino: id }, include: [ { model: Usuario.scope('eliminarPassword'), as: 'usuario'}] })
+
+    res.render('usuario/mensajes', {
+        pagina: 'Todos',
+        csrfToken: req.csrfToken(),
+        formatearFecha,
+        mensajes
+    })
+}
+
+const mensajeLeido = async( req, res) => {
+    const { id } = req.params
+    const { pagina } = req.body
+    const mensaje = await Aviso.findByPk(id)
+
+    try {
+        mensaje.set({
+            estado: false
+        })
+
+        await mensaje.save()
+
+        res.redirect(pagina);
+        
+    } catch (error) {
+        console.log(error)
+    }
+
 }
 
 export {
@@ -116,5 +165,7 @@ export {
     perfil,
     crearSolicitud,
     enviarSolicitud,
-    verSolicitudes
+    verSolicitudes,
+    mensajesPendientes,
+    mensajes
 }

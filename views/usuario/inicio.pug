@@ -17,7 +17,8 @@ block contenido
                                 p(class="text-center font-semibold text-md ")=`Emitido el: ${formatearFecha(aviso.createdAt)}`                    
                             div(class="sm:w-1/4 md:w-2/6 lg:w-1/6 flex flex-col 2xl:flex-row gap-2 ")
                                 form(action=`/user/mensaje-leido/${aviso.id}`, method="POST")
-                                    input(type="hidden" name="_csrf" value=csrfToken) 
+                                    input(type="hidden" name="_csrf" value=csrfToken)
+                                    input(type="hidden" name="pagina" value='/user/inicio')  
                                     input(class="w-full cursor-pointer px-2 py-2 md:py-1 text-center text-xs leading-5 font-semibold rounded bg-green-400" type="submit" value="Marcar como leido") 
     else
         div(class="bg-slate-300 shadow rounded-lg mt-5")

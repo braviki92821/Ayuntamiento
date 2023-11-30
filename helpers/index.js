@@ -1,6 +1,6 @@
 const formatearFecha = fecha =>{
-    const nuevaFecha = new Date(fecha).toISOString().slice(0,10)
- 
+    const nuevaFecha = new Date(fecha).toUTCString()
+    //toISOString().slice(0,10)
     const opciones= {
      weekday: 'long',
      year: 'numeric',
