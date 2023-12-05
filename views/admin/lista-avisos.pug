@@ -1,0 +1,19 @@
+extends ../layout/admin
+
+block contenido
+    h1(class="text-center mt-5 font-bold text-2xl")=pagina
+
+    if avisos.length
+        div(class="bg-slate-300 shadow rounded-lg")
+            ul(class="divide-y divide-gray-200")
+                each aviso in avisos
+                    li
+                        div(class="p-6 w-full flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-8 gap-4 md:space-y-0")
+                            div(class="sm:w-3/4 md:w-4/6 lg:w-5/6 space-y-3")
+                                p(class="block text-sm font-extrabold text-indigo-600 truncate")=aviso.titulo
+                                p(class="text-sm text-black font-bold")= aviso.mensaje
+                                p(class="text-sm text-black font-bold")= `Enviado el: ${formatearFecha(aviso.createdAt)}` 
+                            div(class="sm:w-1/4 md:w-2/6 lg:w-1/6 flex flex-col 2xl:flex-row gap-2 ")
+                                    form(action=`/admin/eliminar-aviso/${aviso.id}`, method="POST")
+                                        input(type="hidden" name="_csrf" value=csrfToken)
+                                        input(class="w-full cursor-pointer px-2 py-2 md:py-1 text-center text-xs leading-5 font-semibold rounded bg-red-500" type="submit" value="Eliminar")

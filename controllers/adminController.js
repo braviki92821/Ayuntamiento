@@ -376,7 +376,7 @@ const eliminarUsuario = async (req, res) => {
          estado: false
        })
 
-       usuario.save()
+       await usuario.save()
 
        res.redirect('/admin/usuarios')
     } catch (error) {
@@ -437,7 +437,51 @@ const enviarAviso = async (req, res) => {
     })
 
     res.redirect('/admin/inicio')
-} 
+}
+
+const avisos = async (req, res) => {
+    const { tipo } = req.usuario
+
+    if(tipo != 'Administrador'){
+        res.redirect('/user/inicio')
+    }
+
+    const avisos = await Aviso.findAll({ where: { estado: true, destino: 'todos'}})
+
+    res.render('admin/lista-avisos',{
+        pagina: 'Todos los avisos',
+        csrfToken: req.csrfToken(),
+        formatearFecha,
+        avisos
+    })
+}
+
+const eliminarAviso = async (req, res) => {
+    const { tipo } = req.usuario
+    const { id } = req.params
+
+    if(tipo != 'Administrador'){
+        res.redirect('/user/inicio')
+    }
+
+    const aviso = await Aviso.findByPk(id)
+    
+    if(!aviso) {
+        return res.redirect('/admin/lista-avisos')
+    }
+
+    try {
+        aviso.set({
+          estado: false
+        })
+ 
+       await aviso.save()
+ 
+        res.redirect('/admin/lista-avisos')
+     } catch (error) {
+         console.log(error)
+     }
+}
 
 export {
     inicio,
@@ -453,5 +497,7 @@ export {
     guardarUsuario,
     eliminarUsuario,
     crearAviso,
-    enviarAviso
+    enviarAviso,
+    avisos,
+    eliminarAviso
 }

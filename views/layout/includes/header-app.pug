@@ -17,13 +17,13 @@ aside(class="fixed !visible  top-0 left-0 z-[1035] h-screen sm:w-30 bg-[#912828]
                     a(href="/user/inicio" class="flex items-center ")
                         i(class="fa fa-bars mr-2")
                         span Inicio      
-            li
+            li(class="li-desplegable")
                 div(class="flex items-center justify-between p-2 hover:bg-gray-700")
                     div(class="flex items-center")
                         i(class="fa fa-user mr-2")
                         span Perfil      
                     i(class="fas fa-chevron-down text-xs")  
-                ul(class="desplegable ml-4 ")
+                ul(class="desplegable ml-4 hidden")
                     li
                         a(href="/user/perfil" class="block p-2 hover:bg-gray-700 flex items-center ")
                             i(class="fas fa-chevron-right") 
@@ -32,13 +32,13 @@ aside(class="fixed !visible  top-0 left-0 z-[1035] h-screen sm:w-30 bg-[#912828]
                         a(href=`/auth/reset-password` class="block p-2 hover:bg-gray-700 flex items-center ")
                             i(class="fas fa-chevron-right") 
                                 span(class="text-md mr-2") Cambio de contraseña     
-            li(class="opcion-desplegable")
+            li(class="li-desplegable")
                 div(class="flex items-center justify-between p-2 hover:bg-gray-700")
                     div(class="flex items-center")
                         i(class="fa fa-file mr-2")
                         span Solicitudes      
                     i(class="fas fa-chevron-down text-xs")
-                ul(class="desplegable ml-4 ")
+                ul(class="desplegable ml-4 hidden")
                     li
                         a(href="/user/crear-solicitud" class="block p-2 hover:bg-gray-700 flex items-center ")
                             i(class="fas fa-chevron-right") 
@@ -47,13 +47,13 @@ aside(class="fixed !visible  top-0 left-0 z-[1035] h-screen sm:w-30 bg-[#912828]
                         a(href="/user/mis-solicitudes" class="block p-2 hover:bg-gray-700 flex items-center ")
                             i(class="fas fa-chevron-right") 
                                 span(class="text-md mr-2") Tus Solicitudes
-            li(class="opcion-desplegable")
+            li(class="li-desplegable")
                 div(class="flex items-center justify-between p-2 hover:bg-gray-700")
                     div(class="flex items-center")
                         i(class="fa fa-envelope mr-2")
                         span Mensajes      
                     i(class="fas fa-chevron-down text-xs")
-                ul(class="desplegable ml-4 ")
+                ul(class="desplegable ml-4 hidden")
                     li
                         a(href="/user/mensajes-pendientes" class="block p-2 hover:bg-gray-700 flex items-center ")
                             i(class="fas fa-chevron-right") 
