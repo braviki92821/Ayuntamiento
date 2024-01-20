@@ -1,5 +1,4 @@
 import express from 'express'
-import { body } from "express-validator";
 import { autenticar, cerrarSesion, formularioLogin, confirmar, resetPassword, formularioOlvidePassword, comprobarToken, nuevoPassword, nuevoPasswordAuth, cambiarPassword } from '../controllers/usuarioController.js'
 import protegerRuta from '../middleware/protegerRuta.js'
 
