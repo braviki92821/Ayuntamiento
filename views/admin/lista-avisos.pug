@@ -17,3 +17,5 @@ block contenido
                                     form(action=`/admin/eliminar-aviso/${aviso.id}`, method="POST")
                                         input(type="hidden" name="_csrf" value=csrfToken)
                                         input(class="w-full cursor-pointer px-2 py-2 md:py-1 text-center text-xs leading-5 font-semibold rounded bg-red-500" type="submit" value="Eliminar")
+block scripts
+    script(src="/js/sidebar.js")
