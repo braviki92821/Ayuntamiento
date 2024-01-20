@@ -24,7 +24,7 @@ const emailRegistro = async(datos) =>{
         `<p>Hola ${nombre}, compruebe su cuenta en Ayuntamiento de papantla</p>
          <p>Tu contraseña de acceso: ${password} asegurate de no compartir tu contraseña y guardarla en un lugar seguro</p>
          <p>Tu cuenta en ayuntamiento de papantla ya esta lista, solo debes confirmarla en
-         el siguiente enlace <a href="${process.env.BACKEND_URL}:${process.env.PORT ?? 4500}/auth/confirmar/${token}">Confirmar Cuenta</a></p>
+         el siguiente enlace <a href="${process.env.BACKEND_URL}/auth/confirmar/${token}">Confirmar Cuenta</a></p>
         `
       })
 }
@@ -49,7 +49,7 @@ const emailOlvidePassword = async(datos) =>{
       text:'Restablecer tu contraseña',
       html: 
       `<p>Hola ${nombre}, has solicitado reestablecer tu password en Ayuntamiento de papantla</p>
-       <p>Sigue el siguiente enlace <a href="${process.env.BACKEND_URL}:${process.env.PORT ?? 4500}/auth/olvide-password/${token}">Reestablecer password</a></p>
+       <p>Sigue el siguiente enlace <a href="${process.env.BACKEND_URL}/auth/olvide-password/${token}">Reestablecer password</a></p>
        <p>Si no solicitaste el cambio ignora el mensaje</p>`
     })
 }
